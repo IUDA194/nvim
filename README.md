@@ -1,4 +1,21 @@
-# Neovim config
+<p align="center">
+  <img src="./assets/neovim-anime.png" alt="Neovim Anime Neovim Icon" width="220" />
+</p>
+
+<h1 align="center">Neovim config</h1>
+
+<p align="center">
+  Ежедневная конфигурация Neovim с прозрачной темой, быстрым поиском,
+  продвинутым LSP-стеком и удобными хоткеями.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Neovim-0.10+-57A143?logo=neovim&logoColor=white" />
+  <img src="https://img.shields.io/badge/OS-macOS%20%7C%20Linux-lightgrey" />
+  <img src="https://img.shields.io/badge/Leader-%3CSpace%3E-blue" />
+</p>
+
+---
 
 > Ежедневная конфигурация Neovim с прозрачной темой, быстрым поиском, продвинутым LSP-стеком и удобными хоткеями. Лидер – `<Space>`, локальный лидер – `\`.
 
