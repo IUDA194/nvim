@@ -11,6 +11,7 @@ vim.cmd([[
   highlight SignColumn   guibg=NONE ctermbg=NONE
   highlight StatusLine   guibg=NONE ctermbg=NONE
   highlight TelescopeNormal guibg=NONE ctermbg=NONE
+  " Более мягкое (полу‑прозрачное) выделение Visual
 ]])
 
 -- Для поддержки кириличных раскладок
@@ -31,6 +32,5 @@ vim.opt.relativenumber = true
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 4
-
 
 
