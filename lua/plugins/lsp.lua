@@ -25,6 +25,7 @@ return {
             "ts_ls",
             "html",
             "cssls",
+            "jdtls",
           },
           automatic_installation = false,
         })
@@ -37,6 +38,11 @@ return {
       capabilities.textDocument.completion.completionItem =
         capabilities.textDocument.completion.completionItem or {}
       capabilities.textDocument.completion.completionItem.snippetSupport = true
+      -- Расширим capabilities возможностями cmp, если доступен cmp_nvim_lsp
+      pcall(function()
+        local cmp_nvim_lsp = require("cmp_nvim_lsp")
+        capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+      end)
 
       -- ===== helpers =====
       local function no_format_on_attach(client, _)
@@ -295,6 +301,8 @@ return {
       })
       table.insert(enabled, "cssls")
 
+      -- JAVA: управляется через плагин nvim-jdtls (см. lua/plugins/jdtls.lua)
+
       ------------------------------------------------------------------
       --                    ВКЛЮЧАЕМ ВСЕ СЕРВЕРА
       ------------------------------------------------------------------
@@ -312,4 +320,3 @@ return {
     end,
   },
 }
-
