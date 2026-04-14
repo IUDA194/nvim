@@ -1,57 +1,114 @@
 return {
-  "tiagovla/tokyodark.nvim",
+  "rebelot/kanagawa.nvim",
   lazy = false,
   priority = 1000,
   opts = {
-    transparent_background = true,
-    gamma = 1.00,
+    transparent = true,
   },
   config = function(_, opts)
-    require("tokyodark").setup(opts)
+    require("kanagawa").setup(opts)
     vim.opt.termguicolors = true
-    vim.cmd("colorscheme tokyodark")
+    vim.cmd("colorscheme kanagawa")
 
     local function apply_highlights()
-      -- Визуальное выделение: заметно, но не “кислотно”
-      -- (подходит под палитру TokyoDark)
+      local fish = {
+        foreground = "#DCD7BA",
+        selection = "#2D4F67",
+        comment = "#727169",
+        red = "#C34043",
+        orange = "#FF9E64",
+        yellow = "#C0A36E",
+        green = "#76946A",
+        purple = "#957FB8",
+        cyan = "#7AA89F",
+        pink = "#D27E99",
+      }
+
+      -- Контрастные акценты под палитру Kanagawa.
       vim.api.nvim_set_hl(0, "Visual", {
-        bg = "#2F3B55",
+        bg = "#2A2A37",
         fg = "NONE",
         bold = true,
       })
       vim.api.nvim_set_hl(0, "VisualNOS", {
-        bg = "#2F3B55",
+        bg = "#2A2A37",
         fg = "NONE",
         bold = true,
       })
 
-      -- Поиск: теплый акцент, хорошо заметен
       vim.api.nvim_set_hl(0, "Search", {
-        bg = "#4A3F2A",
+        bg = "#3B3B27",
         fg = "NONE",
         bold = true,
       })
       vim.api.nvim_set_hl(0, "IncSearch", {
-        bg = "#6B2D3A",
+        bg = "#4A2E2A",
         fg = "NONE",
         bold = true,
       })
 
-      -- Neovim 0.9+ : подсветка текущего совпадения
       pcall(vim.api.nvim_set_hl, 0, "CurSearch", {
-        bg = "#8F5E15",
-        fg = "#0B0F14",
+        bg = "#C4B28A",
+        fg = "#1F1F28",
         bold = true,
       })
 
-      -- Чтобы курсор не терялся на прозрачном фоне
-      vim.api.nvim_set_hl(0, "CursorLine", { bg = "#1A1F2A" })
+      -- Глобальная прозрачность окон/плавающих панелей.
+      vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "NormalNC", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "FloatBorder", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "FloatTitle", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "SignColumn", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "LineNr", { bg = "NONE", fg = "#5E5A63" })
+      vim.api.nvim_set_hl(0, "CursorLineNr", { bg = "NONE", fg = "#8A7A52", bold = true })
+      pcall(vim.api.nvim_set_hl, 0, "LineNrAbove", { bg = "NONE", fg = "#5E5A63" })
+      pcall(vim.api.nvim_set_hl, 0, "LineNrBelow", { bg = "NONE", fg = "#5E5A63" })
+      vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "NONE", fg = "#4A4650" })
+      vim.api.nvim_set_hl(0, "NonText", { bg = "NONE", fg = "#4A4650" })
+      vim.api.nvim_set_hl(0, "StatusLine", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "NONE" })
+
+      -- Telescope (включая file_browser) в палитре fish Kanagawa.
+      vim.api.nvim_set_hl(0, "TelescopeNormal", { fg = fish.foreground, bg = "NONE" })
+      vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = fish.comment, bg = "NONE" })
+      vim.api.nvim_set_hl(0, "TelescopeTitle", { fg = fish.purple, bg = "NONE", bold = true })
+      vim.api.nvim_set_hl(0, "TelescopePromptNormal", { fg = fish.foreground, bg = "NONE" })
+      vim.api.nvim_set_hl(0, "TelescopePromptBorder", { fg = fish.cyan, bg = "NONE" })
+      vim.api.nvim_set_hl(0, "TelescopePromptTitle", { fg = fish.cyan, bg = "NONE", bold = true })
+      vim.api.nvim_set_hl(0, "TelescopePromptPrefix", { fg = fish.green, bg = "NONE" })
+      vim.api.nvim_set_hl(0, "TelescopeResultsNormal", { fg = fish.foreground, bg = "NONE" })
+      vim.api.nvim_set_hl(0, "TelescopeResultsBorder", { fg = fish.comment, bg = "NONE" })
+      vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { fg = fish.purple, bg = "NONE", bold = true })
+      vim.api.nvim_set_hl(0, "TelescopePreviewNormal", { fg = fish.foreground, bg = "NONE" })
+      vim.api.nvim_set_hl(0, "TelescopePreviewBorder", { fg = fish.comment, bg = "NONE" })
+      vim.api.nvim_set_hl(0, "TelescopePreviewTitle", { fg = fish.purple, bg = "NONE", bold = true })
+      vim.api.nvim_set_hl(0, "TelescopeSelection", { fg = fish.foreground, bg = fish.selection, bold = true })
+      vim.api.nvim_set_hl(0, "TelescopeSelectionCaret", { fg = fish.cyan, bg = fish.selection, bold = true })
+      vim.api.nvim_set_hl(0, "TelescopeMatching", { fg = fish.orange, bold = true })
+      vim.api.nvim_set_hl(0, "TelescopeMultiSelection", { fg = fish.yellow, bg = "NONE", bold = true })
+      vim.api.nvim_set_hl(0, "TelescopeMultiIcon", { fg = fish.pink, bg = "NONE" })
+      vim.api.nvim_set_hl(0, "TelescopePreviewLine", { bg = fish.selection })
+      vim.api.nvim_set_hl(0, "TelescopePreviewMatch", { fg = fish.orange, bold = true })
+      vim.api.nvim_set_hl(0, "TelescopePromptCounter", { fg = fish.comment, bg = "NONE" })
+      vim.api.nvim_set_hl(0, "TelescopePreviewDirectory", { fg = fish.cyan, bg = "NONE", bold = true })
+      vim.api.nvim_set_hl(0, "TelescopeDirectoryIcon", { fg = fish.cyan, bg = "NONE" })
+
+      -- Noice cmdline popup.
+      pcall(vim.api.nvim_set_hl, 0, "NoiceCmdlinePopup", { bg = "NONE" })
+      pcall(vim.api.nvim_set_hl, 0, "NoiceCmdlinePopupBorder", { bg = "NONE" })
+      pcall(vim.api.nvim_set_hl, 0, "NoiceCmdlinePopupTitle", { bg = "NONE" })
+      pcall(vim.api.nvim_set_hl, 0, "NoiceCmdlineIcon", { bg = "NONE" })
+      pcall(vim.api.nvim_set_hl, 0, "NoicePopupmenu", { bg = "NONE" })
+      pcall(vim.api.nvim_set_hl, 0, "NoicePopupmenuBorder", { bg = "NONE" })
+
+      vim.api.nvim_set_hl(0, "CursorLine", { bg = "#252535" })
     end
 
     apply_highlights()
 
-    -- Защита: любая тема/перезагрузка схемы не перетрёт наши hl
-    local group = vim.api.nvim_create_augroup("UserTokyoDarkHighlights", { clear = true })
+    -- Любая перезагрузка темы не должна стирать наши hl.
+    local group = vim.api.nvim_create_augroup("UserKanagawaHighlights", { clear = true })
     vim.api.nvim_create_autocmd("ColorScheme", {
       group = group,
       pattern = "*",
@@ -59,4 +116,3 @@ return {
     })
   end,
 }
-

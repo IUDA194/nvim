@@ -14,6 +14,7 @@ return {
         file_browser = {
           theme = "ivy",
           hijack_netrw = true,
+          dir_icon_hl = "TelescopeDirectoryIcon",
           mappings = {
             ["i"] = {
               -- insert mode mappings
@@ -30,4 +31,3 @@ return {
     telescope.load_extension("file_browser")
   end,
 }
-

@@ -46,6 +46,15 @@ return {
         end
       end
 
+      -- Авто-определение пути к Java для рантайма
+      local java_home = vim.fn.getenv("JAVA_HOME")
+      if java_home == vim.NIL or java_home == "" then
+        -- Если JAVA_HOME не задан, попробуем типовой путь для macOS/Linux
+        java_home = (sys == "Darwin") 
+          and "/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home"
+          or "/usr/lib/jvm/java-21-oracle" 
+      end
+
       local config = {
         cmd = {
           jdtls_bin,
@@ -55,8 +64,30 @@ return {
         root_dir = root_dir,
         capabilities = capabilities,
         flags = { allow_incremental_sync = true },
+        
+        -- Секция настроек для исправления ошибки "Arrow in case statement"
+        settings = {
+          java = {
+            configuration = {
+              runtimes = {
+                {
+                  name = "JavaSE-21",
+                  path = java_home,
+                  default = true,
+                },
+              },
+            },
+            -- Уровни компиляции (на случай, если нет pom.xml/build.gradle)
+            compile = {
+              nullAnalysis = { mode = "returnAttributes" }
+            },
+            contentProvider = { preferred = "fernflower" },
+          },
+        },
+
         on_attach = function(client, bufnr)
           no_format_on_attach(client)
+          -- Здесь можно добавить специфичные для Java бинды (например, jdtls.extract_variable)
         end,
       }
 
@@ -64,4 +95,3 @@ return {
     end,
   },
 }
-

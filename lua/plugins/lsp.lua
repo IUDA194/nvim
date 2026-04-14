@@ -223,6 +223,19 @@ return {
       })
       table.insert(enabled, "ruff")
 
+      vim.lsp.config("pylsp", {
+        settings = {
+          pylsp = {
+            plugins = {
+              pycodestyle = {
+                ignore = { "E501" },
+                maxLineLength = 88,
+              },
+            },
+          },
+        },
+      })
+
       -- ===== Rust =====
       vim.lsp.config("rust_analyzer", {
         capabilities = capabilities,

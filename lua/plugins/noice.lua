@@ -27,21 +27,28 @@ return {
           height = "auto",
         },
         win_options = {
-          winblend = 0,
+          winblend = 15,
+        },
+      },
+      cmdline_popup = {
+        win_options = {
+          winblend = 15,
+        },
+      },
+      popupmenu = {
+        win_options = {
+          winblend = 15,
         },
       },
     },
   },
 
   config = function(_, opts)
-    -- Фикс для сообщения "NotifyBackground has no background highlight"
-    vim.api.nvim_set_hl(0, "NotifyBackground", { bg = "#000000" })
+    -- Не задаем сплошной фон, чтобы окно оставалось прозрачным.
+    vim.api.nvim_set_hl(0, "NotifyBackground", { bg = "NONE" })
 
-    -- Настройка nvim-notify (фон для 100% прозрачности и т.п.)
     local notify = require("notify")
-    notify.setup({
-      background_colour = "#000000",
-    })
+    notify.setup({})
     -- чтобы все vim.notify шли через nvim-notify
     vim.notify = notify
 
@@ -49,4 +56,3 @@ return {
     require("noice").setup(opts)
   end,
 }
-
