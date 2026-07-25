@@ -5,6 +5,7 @@ return {
     dependencies = {
       { "mason-org/mason.nvim", config = true },
       { "williamboman/mason-lspconfig.nvim" },
+      { "hrsh7th/cmp-nvim-lsp" },
     },
     config = function()
       local ok_mason, mason = pcall(require, "mason")
@@ -52,19 +53,33 @@ return {
         end
       end
 
-      local function disable_diagnostics_for(client)
-        client.handlers["textDocument/publishDiagnostics"] = function() end
+      local function disable_diagnostics()
+        return {
+          ["textDocument/publishDiagnostics"] = function() end,
+        }
       end
 
       local function cmd_exists(cmd)
         return vim.fn.executable(cmd) == 1
       end
 
+      local function resolve_cmd(bin, fallback)
+        local exepath = vim.fn.exepath(bin)
+        if exepath and #exepath > 0 then
+          return exepath
+        end
+
+        local mason_bin = vim.fn.stdpath("data") .. "/mason/bin/" .. bin
+        if vim.fn.executable(mason_bin) == 1 then
+          return mason_bin
+        end
+
+        return fallback or bin
+      end
+
       local function resolve_ty_base_cmd()
         if cmd_exists("ty") then
           return { "ty", "server" }
-        elseif cmd_exists("uvx") then
-          return { "uvx", "ty", "server" }
         else
           return nil
         end
@@ -80,6 +95,9 @@ return {
         end
         return nil
       end
+
+      local ty_base_cmd = resolve_ty_base_cmd()
+      local has_ty = ty_base_cmd ~= nil
 
       -- ===== Общий on_attach через автокоманду LspAttach =====
       local augroup = vim.api.nvim_create_augroup("UserLspAttach", {})
@@ -137,7 +155,9 @@ return {
 
       -- ===== Pyright (без диагностик) =====
       vim.lsp.config("pyright", {
+        cmd = { resolve_cmd("pyright-langserver"), "--stdio" },
         capabilities = capabilities,
+        single_file_support = true,
         root_dir = util.root_pattern(
           "pyproject.toml",
           "alembic.ini",
@@ -174,48 +194,48 @@ return {
           },
         },
         -- отключим диагностику для pyright (отдадим её ty)
+        handlers = has_ty and disable_diagnostics() or nil,
         on_attach = function(client, bufnr)
           no_format_on_attach(client, bufnr)
-          disable_diagnostics_for(client)
         end,
       })
       table.insert(enabled, "pyright")
 
       -- ===== ty (тип-чекер) =====
-      vim.lsp.config("ty", {
-        capabilities = capabilities,
-        on_new_config = function(new_config, root_dir)
-          local base = resolve_ty_base_cmd()
-          if not base then
-            vim.schedule(function()
-              vim.notify(
-                "Не найден ty/uvx: установи `uv tool install ty` и добавь ~/.local/bin в PATH",
-                vim.log.levels.ERROR
-              )
-            end)
-            return
-          end
+      if has_ty then
+        vim.lsp.config("ty", {
+          capabilities = capabilities,
+          cmd = ty_base_cmd,
+          on_new_config = function(new_config, root_dir)
+            new_config.cmd = ty_base_cmd
 
-          new_config.cmd = base
-
-          local venv = detect_venv(root_dir)
-          if not venv then
-            local env_ve = vim.fn.getenv("VIRTUAL_ENV")
-            if env_ve and #env_ve > 0 and util.path.is_dir(env_ve) then
-              venv = env_ve
+            local venv = detect_venv(root_dir)
+            if not venv then
+              local env_ve = vim.fn.getenv("VIRTUAL_ENV")
+              if env_ve and #env_ve > 0 and util.path.is_dir(env_ve) then
+                venv = env_ve
+              end
             end
-          end
 
-          if venv then
-            new_config.cmd_env = new_config.cmd_env or {}
-            new_config.cmd_env.VIRTUAL_ENV = venv
-          end
-        end,
-      })
-      table.insert(enabled, "ty")
+            if venv then
+              new_config.cmd_env = new_config.cmd_env or {}
+              new_config.cmd_env.VIRTUAL_ENV = venv
+            end
+          end,
+        })
+        table.insert(enabled, "ty")
+      else
+        vim.schedule(function()
+          vim.notify(
+            "ty не найден: Python diagnostics остаются на pyright. Для ty установи `uv tool install ty` и добавь ~/.local/bin в PATH",
+            vim.log.levels.WARN
+          )
+        end)
+      end
 
       -- ===== Ruff =====
       vim.lsp.config("ruff", {
+        cmd = { resolve_cmd("ruff"), "server" },
         capabilities = capabilities,
         on_attach = function(client, bufnr)
           no_format_on_attach(client, bufnr)
@@ -327,6 +347,33 @@ return {
         signs = true,
         underline = true,
         update_in_insert = false,
+        float = {
+          border = "rounded",
+          source = "if_many",
+        },
+      })
+
+      vim.keymap.set("n", "gl", function()
+        vim.diagnostic.open_float(nil, {
+          focusable = false,
+          scope = "cursor",
+        })
+      end, { desc = "Show line diagnostics" })
+
+      vim.api.nvim_create_autocmd("CursorHold", {
+        group = augroup,
+        callback = function()
+          vim.diagnostic.open_float(nil, {
+            focusable = false,
+            scope = "cursor",
+            close_events = {
+              "BufLeave",
+              "CursorMoved",
+              "InsertEnter",
+              "FocusLost",
+            },
+          })
+        end,
       })
 
       pcall(vim.lsp.set_log_level, "ERROR")

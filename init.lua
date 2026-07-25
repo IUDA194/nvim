@@ -17,6 +17,8 @@ vim.cmd([[
 -- Для поддержки кириличных раскладок
 require("config.remap_cyrillic")
 
+require("config.autoread")
+
 -- Для копирования в системный буфер
 vim.keymap.set({ "n", "v" }, "y", '"+y')     -- yank
 vim.keymap.set("n", "Y", '"+Y')              -- yank entire line
@@ -32,5 +34,3 @@ vim.opt.relativenumber = true
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 4
-
-

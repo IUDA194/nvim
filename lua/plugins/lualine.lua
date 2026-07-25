@@ -3,36 +3,46 @@ return {
   dependencies = { "nvim-tree/nvim-web-devicons" },
   lazy = false,
   config = function()
+    local config = vim.fn["gruvbox_material#get_configuration"]()
+    local palette = vim.fn["gruvbox_material#get_palette"](config.background, config.foreground, config.colors_override)
+    local function hex(name)
+      local value = palette[name]
+      if type(value) == "table" then
+        return value[1]
+      end
+      return value
+    end
+
     local transparent_theme = {
       normal = {
-        a = { fg = "#DCD7BA", bg = "NONE", gui = "bold" },
-        b = { fg = "#C8C093", bg = "NONE" },
-        c = { fg = "#A6A69C", bg = "NONE" },
+        a = { fg = hex("orange"), bg = "NONE", gui = "bold" },
+        b = { fg = hex("fg0"), bg = "NONE" },
+        c = { fg = hex("bg4"), bg = "NONE" },
       },
       insert = {
-        a = { fg = "#DCD7BA", bg = "NONE", gui = "bold" },
-        b = { fg = "#C8C093", bg = "NONE" },
-        c = { fg = "#A6A69C", bg = "NONE" },
+        a = { fg = hex("orange"), bg = "NONE", gui = "bold" },
+        b = { fg = hex("fg0"), bg = "NONE" },
+        c = { fg = hex("bg4"), bg = "NONE" },
       },
       visual = {
-        a = { fg = "#DCD7BA", bg = "NONE", gui = "bold" },
-        b = { fg = "#C8C093", bg = "NONE" },
-        c = { fg = "#A6A69C", bg = "NONE" },
+        a = { fg = hex("orange"), bg = "NONE", gui = "bold" },
+        b = { fg = hex("fg0"), bg = "NONE" },
+        c = { fg = hex("bg4"), bg = "NONE" },
       },
       replace = {
-        a = { fg = "#DCD7BA", bg = "NONE", gui = "bold" },
-        b = { fg = "#C8C093", bg = "NONE" },
-        c = { fg = "#A6A69C", bg = "NONE" },
+        a = { fg = hex("orange"), bg = "NONE", gui = "bold" },
+        b = { fg = hex("fg0"), bg = "NONE" },
+        c = { fg = hex("bg4"), bg = "NONE" },
       },
       command = {
-        a = { fg = "#DCD7BA", bg = "NONE", gui = "bold" },
-        b = { fg = "#C8C093", bg = "NONE" },
-        c = { fg = "#A6A69C", bg = "NONE" },
+        a = { fg = hex("orange"), bg = "NONE", gui = "bold" },
+        b = { fg = hex("fg0"), bg = "NONE" },
+        c = { fg = hex("bg4"), bg = "NONE" },
       },
       inactive = {
-        a = { fg = "#A6A69C", bg = "NONE" },
-        b = { fg = "#A6A69C", bg = "NONE" },
-        c = { fg = "#A6A69C", bg = "NONE" },
+        a = { fg = hex("bg4"), bg = "NONE" },
+        b = { fg = hex("bg4"), bg = "NONE" },
+        c = { fg = hex("bg4"), bg = "NONE" },
       },
     }
 
